@@ -1,0 +1,108 @@
+<div class="container" fxLayout="column" fxLayoutGap="40px">
+    <div fxFlex *ngIf="dish">
+        <div class="container" fxLayout="row" fxLayout.sm="column" fxLayout.xs="column"
+            fxLayoutAlign.gt-md="space-around" fxLayoutGap="10px" fxLayoutGap.xs="0">
+
+            <div fxFlex="40">
+                <mat-card *ngIf="dish" [@visibility]="visibility">
+                    <h3>{{dish.name | uppercase}}</h3>
+                    <mat-card-header>
+                        <mat-card-title>
+                            <h3></h3>
+                            <img mat-card-image src="{{ BaseURL + dish.image }}"  alt={{dish.name}}>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p> {{dish.description}}</p>
+
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button [routerLink]="['/dishdetail',prev]"><span
+                                class="fa fa-chevron-left fa -lg"></span></button>
+                        <button mat-button (click)="goBack()"> Back</button>
+                        <button mat-button> Like</button>
+                        <button mat-button> Share</button>
+                        <span class="flex-spacer"></span>
+                        <button mat-button [routerLink]="['/dishdetail',next]"><span
+                                class="fa fa-chevron-right fa -lg"></span></button>
+
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+
+            <div fxFlex="40">
+                <mat-list *ngIf="dish" [@visibility]="visibility" >
+                    <h3>{{dish.name | uppercase}}</h3>
+
+                    <h3>Comments</h3>
+                    <mat-list-item *ngFor="let comment of dish.comments">
+                        <h4 matLine>{{comment.comment}}</h4>
+                        <p matLine>{{comment.rating}} Stars</p>
+                        <p matLine>
+                            <span> --{{comment.author}} {{comment.date | date}}</span>
+                        </p>
+                    </mat-list-item>
+                    
+                    <mat-list-item *ngIf="formErrors['name']==false && formErrors['comment']==false">
+                        <h4 matLine>{{user.author}}</h4>
+                        <p matLine>{{gridsize.value}} Stars</p> 
+                        <p matLine>-- {{user.comment}}</p>
+                    </mat-list-item>
+
+
+
+                </mat-list>
+                <!-- <p>{{ user | json}}</p> -->
+
+                <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+
+                    <table class="form-size">
+                        <tr>
+                            <mat-form-field class="half-width">
+                                <input matInput [(ngModel)]="user.author" formControlName="author" placeholder="Name"
+                                    type="text" required="">
+                                <mat-error *ngIf="[formErrors['author']]">{{[formErrors['author']]}}</mat-error>
+
+                            </mat-form-field>
+                        </tr>
+
+                        <tr>
+                            <mat-slider  thumbLabel #gridsize (change)="updatingsetting($event)" 
+                                tickInterval="1" step="1" min="1" max="5"   >
+                            </mat-slider>
+
+                        </tr>
+                        <tr>
+                            <mat-form-field class="full-width">
+                                <textarea [(ngModel)]="user.comment" matInput cols="50" rows="15"
+                                    formControlName="comment" placeholder="Comment" type="text" required=""></textarea>
+                                <mat-error *ngIf="[formErrors['comment']]">{{[formErrors['comment']]}}</mat-error>
+                            </mat-form-field>
+                            <button type="submit" mat-button (click)="changeFormat(today)"
+                                class="background-primary text-floral-white" >submit</button>
+                        </tr>
+                    </table>
+
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+             <div [hidden]="dish|| errMess">
+                <mat-spinner>
+
+                </mat-spinner>
+                <h4>Loading . . . Please Wait</h4>
+            </div> 
+            <div fxflex  *ngIf="errMess">
+                <h2>Error</h2>
+                <h4>{{errMess}}</h4>
+            </div>
+        </div>
+
+    </div>
